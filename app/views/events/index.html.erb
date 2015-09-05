@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<h1>I kjøleskapet er det øl</h1>
+<% if @events.empty? %>
+  <p>Ingen målinger enda.</p>
+<% else %>
+  <p>Akkurat nå: <span id="latest"><%= @current_value %></span>&deg;C</p>
+<% end %>
+<div id="chart"></div>
+
+<%= javascript_tag do %>
+  window.data = <%=raw ActiveModel::ArraySerializer.new(@events, each_serializer: EventSerializer).to_json %>;
+<% end %>

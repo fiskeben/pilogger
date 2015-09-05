@@ -1,0 +1,66 @@
+require 'test_helper'
+
+class Api::EventsControllerTest < ActionController::TestCase
+  # test "the truth" do
+  #   assert true
+  # end
+
+  test "should get events from last 24 hours" do
+    get :index
+    assert_response :success
+    assert_not_nil assigns(:events)
+    assert_equal 2, assigns(:events).length
+  end
+
+  test "should get events newer than" do
+    get :index, {from: Time.now - 90.minutes}
+    assert_response :success
+    assert_not_nil assigns(:events)
+    assert_equal 1, assigns(:events).length
+  end
+
+  test "should get events within duration" do
+    get :index, {from: Time.now - 30.hours, to: Time.now - 20.hours}
+    assert_response :success
+    assert_not_nil assigns(:events)
+    assert_equal 1, assigns(:events).length
+  end
+
+  test "should create event" do
+    now = Time.now
+    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
+    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+
+    @request.headers["HTTP_DATE"] = date_string
+    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+
+    assert_difference('Event.count') do
+      post(:create, {event: {name: 'temperature', occurred_at: Time.now, value: 12.3}})
+    end
+    assert_response :success
+  end
+
+  test "should update event" do
+    now = Time.now
+    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
+    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+
+    @request.headers["HTTP_DATE"] = date_string
+    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+
+    put(:create, {event: {id: 1, name: 'temperature', occurred_at: now, value: 2.3}})
+    assert_response :success
+  end
+
+  test "should delete event" do
+    now = Time.now
+    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
+    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+    @request.headers["HTTP_DATE"] = date_string
+    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+
+    assert_difference('Event.count', -1) do
+      delete(:destroy, id: 1)
+    end
+  end
+end

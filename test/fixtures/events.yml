@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  name: temperature
+  occurred_at: <%= Time.now - 1.hour %>
+  value: 1.5
+
+two:
+  id: 2
+  name: temperature
+  occurred_at: <%= Time.now - 2.hours %>
+  value: 0.5
+
+three:
+  id: 3
+  name: temperature
+  occurred_at: <%= Time.now - 25.hours %>
+  value: 3.2
