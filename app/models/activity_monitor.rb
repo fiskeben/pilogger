@@ -7,7 +7,7 @@ class ActivityMonitor < ActiveRecord::Base
   end
 
   def start
-    runner = strategy.constantize
+    runner = strategy.constantize.new
     if runner.run
       MonitorMailer.notify(recipients, name).deliver_now
     end
