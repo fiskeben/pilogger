@@ -8,6 +8,10 @@ class Event < ActiveRecord::Base
     self.where("occurred_at > ? and occurred_at < ?", from_time, to_time)
   end
 
+  def self.data_missing?
+    self.where("occurred_at > ?", Time.now - 15.minutes).empty?
+  end
+
   def timestamp
     self.occurred_at.to_f * 1000;
   end
