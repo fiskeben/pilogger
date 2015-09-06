@@ -3,7 +3,6 @@ class User < ActiveRecord::Base
   before_create :generate_api_key_and_secret
 
   def authenticate_digest(digest, supplied_date)
-    Rails.logger.debug "**************************"
     date = Time.parse(supplied_date)
     if date < Time.now - 10.seconds
       return false
