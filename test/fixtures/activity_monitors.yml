@@ -1,11 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  strategy: MyString
-  recipients: MyString
-
-two:
-  name: MyString
-  strategy: MyString
-  recipients: MyString
+  name: Incoming data monitor
+  strategy: IncomingDataMonitorStrategy
+  recipients: john.doe@example.com

@@ -15,4 +15,13 @@ class Event < ActiveRecord::Base
   def timestamp
     self.occurred_at.to_f * 1000;
   end
+
+  def occurred_at=(value)
+    if value && (value =~ /^\d*$/) == 0
+      some_date = Time.at(value.to_f/1000)
+      super(some_date)
+    else
+      super(value)
+    end
+  end
 end

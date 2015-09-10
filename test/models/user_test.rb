@@ -12,5 +12,6 @@ class UserTest < ActiveSupport::TestCase
     digest = 'f24304f9ac8125bcc58686ac90267b4d24d342d3'
     date_string = date.strftime('%a, %e %b %Y %H:%M:%S %Z')
     assert users(:one).authenticate_digest(digest, date_string)
+    travel_back
   end
 end

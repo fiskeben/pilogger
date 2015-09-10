@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class Api::EventsControllerTest < ActionController::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
 
   test "should get events from last 24 hours" do
     get :index
@@ -62,5 +59,18 @@ class Api::EventsControllerTest < ActionController::TestCase
     assert_difference('Event.count', -1) do
       delete(:destroy, id: 1)
     end
+  end
+
+  test "should create event with timestamp" do
+    now = Time.now
+    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
+    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+    @request.headers["HTTP_DATE"] = date_string
+    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+
+    timestamp = 1441558027345
+
+    post(:create, {event: {name: 'foo', occurred_at: timestamp, value: 12.3}})
+    assert_not_nil(assigns[:event].occurred_at)
   end
 end
