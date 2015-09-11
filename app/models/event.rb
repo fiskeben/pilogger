@@ -20,25 +20,19 @@ class Event < ActiveRecord::Base
 
   def occurred_at=(value)
     if !value
-      return super(value)
-    end
-
-    string_value = value.to_s
-    if (string_value =~ /^\d*$/) == 0
-      some_date = Time.at(value.to_f/1000)
-      puts "date #{some_date}"
-      super(some_date)
-    else
       super(value)
+    else
+      super(value_as_date(value))
     end
   end
 
   private
-  def value_to_fixnum(value)
-    begin
-      Integer(value)
-    rescue ArgumentError => e
-      nil
+  def value_as_date(value)
+    string_value = value.to_s
+    if (string_value =~ /^\d*$/) == 0
+      Time.at(value.to_f/1000)
+    else
+      value
     end
   end
 end
