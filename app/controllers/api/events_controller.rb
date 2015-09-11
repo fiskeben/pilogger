@@ -1,5 +1,5 @@
 class Api::EventsController < Api::ApiController
-  before_action :authenticate, except: [ :index ]
+  #before_action :authenticate, except: [ :index ]
   before_action :load_event, except: [ :index, :create, :new ]
 
   def index
