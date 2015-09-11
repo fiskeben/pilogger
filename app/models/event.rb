@@ -9,7 +9,7 @@ class Event < ActiveRecord::Base
   end
 
   def self.data_missing?
-    self.where("occurred_at > ?", Time.now - 15.minutes).empty?
+    self.where("occurred_at > ?", 15.minutes.ago).empty?
   end
 
   def timestamp

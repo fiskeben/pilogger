@@ -10,6 +10,9 @@ class ActivityMonitor < ActiveRecord::Base
     runner = strategy_instance
     if runner.run
       MonitorMailer.notify(recipients, name).deliver_now
+      Alert.create({:status => :open, :name => runner.alert_name, :sent_to => recipients})
+    else
+      Alert.clear_open_alerts(runner.type)
     end
   end
 

@@ -2,10 +2,10 @@
 
 one:
   status: MyString
-  type: 
+  name:
   sent_to: MyString
 
 two:
   status: MyString
-  type: 
+  name: 
   sent_to: MyString
