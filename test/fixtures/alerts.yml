@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  status: MyString
-  name:
-  sent_to: MyString
+  status: open
+  name: foobar
+  sent_to: foo@example.com
 
 two:
-  status: MyString
-  name: 
-  sent_to: MyString
+  status: open
+  name: baz
+  sent_to: foo@example.com

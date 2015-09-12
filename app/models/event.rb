@@ -4,7 +4,7 @@ class Event < ActiveRecord::Base
 
   def self.in_duration(from, to)
     now = Time.now
-    from_time = (from) ? Time.parse(from) : now - 1.day
+    from_time = (from) ? Time.parse(from) : 1.day.ago
     to_time = (to) ? Time.parse(to) : now
 
     self.where("occurred_at > ? and occurred_at < ?", from_time, to_time)
