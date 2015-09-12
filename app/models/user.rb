@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   before_create :generate_api_key_and_secret
 
+  has_many :events
+
   def authenticate_digest(digest, supplied_date)
     date = Time.parse(supplied_date)
     if date < Time.now - 10.seconds

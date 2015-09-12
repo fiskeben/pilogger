@@ -2,6 +2,8 @@ class Event < ActiveRecord::Base
 
   validates_presence_of :occurred_at, :value, :name
 
+  belongs_to :user
+
   def self.in_duration(from, to)
     now = Time.now
     from_time = (from) ? Time.parse(from) : 1.day.ago

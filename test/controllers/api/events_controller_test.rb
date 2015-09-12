@@ -24,12 +24,7 @@ class Api::EventsControllerTest < ActionController::TestCase
   end
 
   test "should create event" do
-    now = Time.now
-    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
-    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
-
-    @request.headers["HTTP_DATE"] = date_string
-    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+    authenticate_user
 
     assert_difference('Event.count') do
       post(:create, {event: {name: 'temperature', occurred_at: Time.now, value: 12.3}})
@@ -38,23 +33,14 @@ class Api::EventsControllerTest < ActionController::TestCase
   end
 
   test "should update event" do
-    now = Time.now
-    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
-    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+    authenticate_user
 
-    @request.headers["HTTP_DATE"] = date_string
-    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
-
-    put(:create, {event: {id: 1, name: 'temperature', occurred_at: now, value: 2.3}})
+    put(:create, {event: {id: 1, name: 'temperature', occurred_at: Time.now, value: 2.3}})
     assert_response :success
   end
 
   test "should delete event" do
-    now = Time.now
-    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
-    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
-    @request.headers["HTTP_DATE"] = date_string
-    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+    authenticate_user
 
     assert_difference('Event.count', -1) do
       delete(:destroy, id: 1)
@@ -62,15 +48,19 @@ class Api::EventsControllerTest < ActionController::TestCase
   end
 
   test "should create event with timestamp" do
-    now = Time.now
-    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
-    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
-    @request.headers["HTTP_DATE"] = date_string
-    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
+    authenticate_user
 
     timestamp = 1441558027345
 
     post(:create, {event: {name: 'foo', occurred_at: timestamp, value: 12.3}})
     assert_not_nil(assigns[:event].occurred_at)
+  end
+
+  def authenticate_user
+    now = Time.now
+    date_string = now.strftime('%a, %e %b %Y %H:%M:%S %Z')
+    authentication_token = Digest::SHA1.hexdigest("abc\n123\n#{date_string}")
+    @request.headers["HTTP_DATE"] = date_string
+    @request.headers["HTTP_AUTHORIZATION"] = "Token token=abc:#{authentication_token}"
   end
 end

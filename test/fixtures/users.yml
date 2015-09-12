@@ -1,9 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   api_key: abc
   api_secret: 123
 
 two:
+  id: 2
   api_key: MyString
   api_secret: MyString

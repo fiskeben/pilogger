@@ -8,6 +8,7 @@ class Api::ApiController < ActionController::Base
       user = User.find_by_api_key(api_key)
       if user
         user.authenticate_digest(digest, request.headers[:date])
+        @current_user = user
       else
         false
       end

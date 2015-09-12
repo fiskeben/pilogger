@@ -15,7 +15,7 @@ class Api::EventsController < Api::ApiController
   end
 
   def create
-    @event = Event.create(event_params)
+    @event = @current_user.events.create(event_params)
     if @event.save
       render json: @event
     else
@@ -36,7 +36,7 @@ class Api::EventsController < Api::ApiController
   private
 
   def load_event
-    @event = Event.find(params[:id])
+    @event = @current_user.events.find(params[:id])
   end
 
   def event_params
