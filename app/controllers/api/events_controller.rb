@@ -3,7 +3,8 @@ class Api::EventsController < Api::ApiController
   before_action :load_event, except: [ :index, :create, :new ]
 
   def index
-    @events = Event.in_duration(params[:from], params[:to])
+    user = User.find_by_id!(params[:user_id])
+    @events = user.events_in_duration(params[:from], params[:to])
     render json: @events
   end
 

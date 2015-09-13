@@ -16,4 +16,5 @@
 //= require highcharts
 //= require highcharts/highcharts-more
 //= require underscore
-//= require_tree .
+//= require chart
+//= require init

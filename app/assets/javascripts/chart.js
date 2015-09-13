@@ -1,15 +1,37 @@
 var leeway = 0.68;
 
-$(document).ready(function () {
-  var series = {
-    name: 'Temperatur',
-    data: _.map(data, function (item) {
-      return itemAsChartObject(item);
-    }).reverse(),
-  },
+function initChart (userId) {
+  window.userId = userId;
+  if (window.data === undefined) {
+    $.getJSON('/api/events?user_id=' + userId)
+      .done(function (data) {
+        renderChart(data.events);
+      })
+      .fail(console.log);
+  } else {
+    renderChart(window.data);
+  }
+}
+
+function renderChart (data) {
+  var series = _.chain(data)
+  .groupBy(function (item) {
+    return item.name;
+  })
+  .map(function (group, key) {
+    return {
+      name: key,
+      data: _.map(group, function (item) {
+        return itemAsChartObject(item);
+      }).reverse()
+    };
+  })
+  .value(),
   categories = _.map(data, function (item) {
     return timestampToDate(item.timestamp)
   });
+
+  setCurrentValues(series);
 
   $('#chart').highcharts(
     {
@@ -31,10 +53,10 @@ $(document).ready(function () {
           enabled: false
         },
         title: {
-            text: null //'Temperaturer'
+            text: null
         },
         subtitle: {
-          text: null //'Utviklingen det siste døgnet'
+          text: null
         },
         xAxis: {
             type: 'datetime',
@@ -61,13 +83,12 @@ $(document).ready(function () {
             animation: false
           }
         },
-        series: window.data
+        series: series
     }
   );
-});
+}
 
 function itemAsChartObject (item) {
-  console.log('creating obj', item);
   return {
     name: timestampToDate(item.timestamp),
     id: item.id,
@@ -90,6 +111,14 @@ function prependZero (value) {
   return (value.length === 1) ? "0" + value : value;
 }
 
+function setCurrentValues(series) {
+  var list = $(".current-values");
+  _.each(series, function (item) {
+    var value = (item.data[item.data.length - 1]).y;
+    $("<li>" + item.name + ": " + value + "&deg;C</li>").appendTo(list);
+  });
+}
+
 function setLatest(item) {
   var value = item.temperature + leeway;
   $("#latest").html(value.toFixed(1).replace(".", ","));
@@ -97,13 +126,17 @@ function setLatest(item) {
 
 function updateData(series) {
   var hasElements = series.data.length > 0,
+    timestamp,
     startDate,
-    query = '';
+    query = '?user_id=' + userId;
 
   if (hasElements) {
-    console.log(series);
-    startDate = new Date(series.data[series.data.length - 1].timestamp + 1);
-    query = '?from=' + encodeURI(startDate.toUTCString());
+    timestamp = series.data[series.data.length - 1].timestamp + 1;
+    if (isNaN(timestamp)) {
+      return;
+    }
+    startDate = new Date(timestamp);
+    query += '&from=' + encodeURI(startDate.toUTCString());
   }
 
   $.getJSON('/api/events' + query, function (data) {

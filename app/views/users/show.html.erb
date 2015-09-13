@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @user.name %></h1>
+<% if @events.empty? %>
+  <p>No data yet.</p>
+<% else %>
+  <p>Current value<span class="plural">s</span>:</p>
+  <ul class="current-values"></ul>
+<% end %>
+<div id="chart"></div>
+
+<%= link_to 'Back to list', root_path %>
+
+<% content_for :javascript do %>
+  <%= javascript_tag do %>
+    window.userId = <%= @user.id %>;
+    window.data = <%=raw ActiveModel::ArraySerializer.new(@events, each_serializer: EventSerializer).to_json %>;
+  <% end %>
+  <%= javascript_include_tag 'chart.js' %>
+<% end %>

@@ -15,6 +15,14 @@ class User < ActiveRecord::Base
     digest == expected_digest
   end
 
+  def events_in_duration(from, to)
+    now = Time.now
+    from_time = (from) ? Time.parse(from) : 1.day.ago
+    to_time = (to) ? Time.parse(to) : now
+
+    events.where("occurred_at > ? and occurred_at < ?", from_time, to_time).reorder('occurred_at')
+  end
+
   protected
 
   def generate_api_key_and_secret

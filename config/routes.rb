@@ -3,5 +3,6 @@ Rails.application.routes.draw do
     resources :events
   end
 
-  root to: 'events#index'
+  get '/:id', to: 'users#show', as: 'user'
+  root to: 'users#index'
 end
