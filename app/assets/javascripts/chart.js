@@ -1,4 +1,64 @@
-var leeway = 0.68;
+var leeway = 0.68,
+  defaultColors = [
+    '#ff0000',
+    '#0000ff',
+    '#00ff00',
+    '#ffff00',
+    '#00ffff',
+    '#000000'
+  ],
+  defaultOptions = {
+      chart: {
+          type: 'line',
+          events: {
+            load: function () {
+              var series = this.series[0];
+              setInterval(function () {
+                updateData(series);
+              }, 10000);
+            }
+          }
+      },
+      credits: {
+        enabled: false
+      },
+      legend: {
+        enabled: true
+      },
+      title: {
+          text: null
+      },
+      subtitle: {
+        text: null
+      },
+      xAxis: {
+          type: 'datetime',
+          tickInterval: 8,
+          labels: {
+            formatter: function () {
+              return formatTime(this.value);
+            }
+          }
+      },
+      yAxis: {
+          title: {
+              useHTML: true,
+              text: null
+          },
+          labels: {
+            useHTML: true,
+            formatter: function () { return this.value.toFixed(1) + "&deg;"; }
+          }
+      },
+      plotOptions: {
+        spline: {
+          animation: false
+        },
+        marker: {
+          symbol: 'circle'
+        }
+      }
+  };
 
 function initChart (userId) {
   window.userId = userId;
@@ -14,16 +74,21 @@ function initChart (userId) {
 }
 
 function renderChart (data) {
-  var series = _.chain(data)
-  .groupBy(function (item) {
-    return item.name;
-  })
-  .map(function (group, key) {
+  var colorIndex = 0,
+  options = {},
+  series = _.chain(data)
+  .sortBy('name')
+  .groupBy('name')
+  .map(function (group, key, foo) {
+    var color = defaultColors[colorIndex];
+    colorIndex = (colorIndex + 1) % defaultColors.length;
     return {
       name: key,
+      color: color,
+      marker: { symbol: 'circle' },
       data: _.map(group, function (item) {
         return itemAsChartObject(item);
-      }).reverse()
+      })
     };
   })
   .value(),
@@ -33,59 +98,11 @@ function renderChart (data) {
 
   setCurrentValues(series);
 
-  $('#chart').highcharts(
-    {
-        chart: {
-            type: 'line',
-            events: {
-              load: function () {
-                var series = this.series[0];
-                setInterval(function () {
-                  updateData(series);
-                }, 10000);
-              }
-            }
-        },
-        credits: {
-          enabled: false
-        },
-        legend: {
-          enabled: false
-        },
-        title: {
-            text: null
-        },
-        subtitle: {
-          text: null
-        },
-        xAxis: {
-            type: 'datetime',
-            categories: categories,
-            tickInterval: 8,
-            labels: {
-              formatter: function () {
-                return formatTime(this.value);
-              }
-            }
-        },
-        yAxis: {
-            title: {
-                useHTML: true,
-                text: null
-            },
-            labels: {
-              useHTML: true,
-              formatter: function () { return this.value.toFixed(1) + "&deg;"; }
-            }
-        },
-        plotOptions: {
-          spline: {
-            animation: false
-          }
-        },
-        series: series
-    }
-  );
+  options = defaultOptions;
+  options.series = series;
+  options.xAxis.categories = categories;
+
+  $('#chart').highcharts(options);
 }
 
 function itemAsChartObject (item) {
