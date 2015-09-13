@@ -94,7 +94,7 @@ function renderChart (data) {
   .value(),
   categories = _.map(data, function (item) {
     return timestampToDate(item.timestamp)
-  });
+  }).reverse();
 
   setCurrentValues(series);
 
