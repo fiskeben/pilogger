@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :events
   end
 
-  get '/:id', to: 'users#show', as: 'user'
+  get '/:username', to: 'users#show', as: 'user'
+  
   root to: 'users#index'
 end
