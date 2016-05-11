@@ -8,6 +8,9 @@ class UsersController < ApplicationController
 
   def show
     @events = @user.events_in_duration(params[:from], params[:to])
+    if template_exists?(@user.username, "layouts")
+      render layout: @user.username
+    end
   end
 
   protected
