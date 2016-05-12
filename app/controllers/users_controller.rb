@@ -9,8 +9,8 @@ class UsersController < ApplicationController
 
   def show
     @events = @user.events_in_duration(params[:from], params[:to])
-    if template_exists?("index", @user.username)
-      render "#{@user.username}/index"
+    if template_exists?("show", @user.username)
+      render "#{@user.username}/show"
     end
   end
 
