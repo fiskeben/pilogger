@@ -1,28 +1,23 @@
-== README
+# PiLogger
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Restful API for logging data points with IoT dingii.
 
-Things you may want to cover:
+## Installation and running
 
-* Ruby version
+TBA but it's a Ruby on Rails app so try:
 
-* System dependencies
+* `$ bundle install`
+* `rails s`
 
-* Configuration
+For deployment you might be interested in running with Docker, like so:
 
-* Database creation
+````
+$ docker build -t pilogger .
+$ docker run -d --name pilogger -p 8080:80 -e "SECRET_KEY_BASE=<your super secret key>" -e "SECRET_TOKEN=<also something super secret>" pilogger
+````
 
-* Database initialization
+Please note that this uses an Sqlite3 database which gets written to disk inside the Docker container. You don't want that so consider mounting a volume where it can live or configure the app to use another database.
 
-* How to run the test suite
+# License
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+MIT
